@@ -22,3 +22,4 @@ for (i in seq(1, length(df), 3)) {
   total <- total + find_match2(df[i],df[i+1],df[i+2])
 } 
 total
+
