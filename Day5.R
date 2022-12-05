@@ -9,10 +9,9 @@ get_stacks <- function() { do.call(rbind,
                                    function(x) { paste0(rev(substr(txt[1:8],x,x)),collapse="") %>% str_trim() } )) }
 
 # get procedures
-get_procedures <- function(ins) { c(str_sub(ins, 6,7),
-                                    str_sub(ins, -6,-6),
-                                    str_sub(ins, -1,-1)) }
-procedures <- do.call(rbind, lapply(txt[11:length(txt)], get_procedures))
+get_procedures <- function() { do.call(rbind, lapply(txt[11:length(txt)], function(x) { c(str_sub(x, 6,7),
+                                                                         str_sub(x, -6,-6),
+                                                                         str_sub(x, -1,-1)) } )) }
 
 # execute procedures
 move_stack <- function(stacks,num,from,to,model) { move <- str_sub(stacks[from],-num,-1)
@@ -29,9 +28,8 @@ execute_procedures <- function(stacks, procedures, model) {
 }
 
 ### Part 1: get top crate from each stack (model 9000)
-stacks <- execute_procedures(get_stacks(),procedures,9000)
-paste0(unlist(lapply(seq(1:9), function(x) { str_sub(stacks[x],-1) } )), collapse="")
+paste0(unlist(lapply(seq(1:9), function(x) { str_sub(execute_procedures(get_stacks(),get_procedures(),9000)[x],-1) } )), collapse="")
 
 ### Part 2: get top crate from each stack (model 9001)
-stacks <- execute_procedures(get_stacks(),procedures,9001)
-paste0(unlist(lapply(seq(1:9), function(x) { str_sub(stacks[x],-1) } )), collapse="")
+paste0(unlist(lapply(seq(1:9), function(x) { str_sub(execute_procedures(get_stacks(),get_procedures(),9001)[x],-1) } )), collapse="")
+
