@@ -33,16 +33,15 @@ monkey_business <- function(monkeys,items,rounds,worry_reduction) {
       item_monkey <- items %>% filter(monkey == {{monkey}})
       for (item in item_monkey$item) {
         if (!is.na(cur_monkey$amount[1])) {
-          if (cur_monkey$operation[1] == '+') { new = as.integer(item) + cur_monkey$amount[1] }
-          if (cur_monkey$operation[1] == '*') { new = as.integer(item) * cur_monkey$amount[1] }
-        } else                                { new = as.integer(item) * as.integer(item) }
+          if (cur_monkey$operation[1] == '+') { new = item + cur_monkey$amount[1] }
+          if (cur_monkey$operation[1] == '*') { new = item * cur_monkey$amount[1] }
+        } else                                { new = item * item }
         new = floor(new / worry_reduction)
-        if (new > divisor) { new = new %% divisor }
         if (new %% cur_monkey$test[1] == 0) { items <- rbind(items, c(cur_monkey$if_true[1],new)) }
                                        else { items <- rbind(items, c(cur_monkey$if_false[1],new)) } 
         monkeys[monkeys$monkey == cur_monkey$monkey,'inspections'] = monkeys[monkeys$monkey == cur_monkey$monkey,'inspections'] + 1
       }
-      items <- items %>% filter(!monkey == cur_monkey$monkey)
+      items <- items %>% filter(!monkey == cur_monkey$monkey) %>% mutate(item = item %% divisor)
     } 
   }
   top_monkeys <- monkeys %>% slice_max(inspections,n=2) %>% pull(inspections)
